@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
+import { Exercise } from '../entities/exercise.entity.js';
 import { RoutineMongoRepository } from '../repository/routine.mongo.repository.js';
 import { UserMongoRepository } from '../repository/user.mongo.repository.js';
 const debug = createDebug('GL:Controller:UserController');
@@ -63,7 +64,14 @@ export class RoutineController {
   async addExercise(req: Request, res: Response, next: NextFunction) {
     try {
       const routine = await this.repoRoutine.getById(req.params.id);
-      routine.exercises.push(req.body);
+      const {
+        exercise,
+        sets,
+        reps,
+        day,
+      }: { exercise: Exercise; sets: number; reps: number; day: number } =
+        req.body;
+      routine.training[day - 1].exercises.push({ exercise, sets, reps });
       const updatedRoutine = await this.repoRoutine.update(routine.id, routine);
       res.json(updatedRoutine);
     } catch (error) {

@@ -3,6 +3,7 @@ import { Routine } from '../entities/routine.entity.js';
 
 const routineSchema = new Schema<Routine>({
   name: { type: String, required: true, unique: true },
+  days: { type: Number, required: true },
   objective: {
     type: String,
     required: true,
@@ -12,9 +13,8 @@ const routineSchema = new Schema<Routine>({
     enum: ['principiante', 'intermedio', 'avanzado'],
     required: true,
   },
-  days: [
+  training: [
     {
-      day: { type: Number },
       exercises: [
         {
           exercise: { type: Schema.Types.ObjectId, ref: 'Exercise' },
@@ -24,7 +24,9 @@ const routineSchema = new Schema<Routine>({
       ],
     },
   ],
+  isDeprecated: { type: Boolean, default: false },
 });
+
 routineSchema.set('toJSON', {
   transform(_document, returnedObject) {
     returnedObject.id = returnedObject._id;

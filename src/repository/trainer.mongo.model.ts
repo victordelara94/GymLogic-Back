@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { Trainer } from '../entities/trainer.entity';
 
 export const trainerSchema = new Schema<Trainer>({
@@ -23,3 +23,13 @@ export const trainerSchema = new Schema<Trainer>({
   clients: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   routines: [{ type: Schema.Types.ObjectId, ref: 'Routine' }],
 });
+trainerSchema.set('toJSON', {
+  transform(_document, returnedObject) {
+    returnedObject.id = returnedObject._id;
+    delete returnedObject.password;
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
+
+export const TrainerModel = model('Trainer', trainerSchema, 'trainers');

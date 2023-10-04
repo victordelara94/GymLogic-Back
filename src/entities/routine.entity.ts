@@ -2,13 +2,14 @@ import { Exercise } from './exercise.entity.js';
 
 export type Routine = {
   id: string;
+  days: number;
   name: string;
   objective: string;
   level: 'principiante' | 'intermedio' | 'avanzado';
-  days: [
+  training: [
     {
-      day: number;
       exercises: [{ exercise: Exercise; sets: number; reps: number }];
     }
   ];
+  isDeprecated: boolean;
 };
