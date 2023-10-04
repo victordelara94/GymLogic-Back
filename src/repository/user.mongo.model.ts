@@ -31,6 +31,11 @@ const userSchema = new Schema<User>({
     type: Schema.Types.ObjectId,
     ref: 'Routine',
   },
+  actualTrainer: {
+    type: Schema.Types.ObjectId,
+    ref: 'Trainer',
+  },
+  completedRoutines: [{ type: Schema.Types.ObjectId, ref: 'Routine' }],
 });
 
 userSchema.set('toJSON', {

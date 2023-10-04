@@ -12,7 +12,18 @@ const routineSchema = new Schema<Routine>({
     enum: ['principiante', 'intermedio', 'avanzado'],
     required: true,
   },
-  exercises: [{ type: Schema.Types.ObjectId, ref: 'Exercise' }],
+  days: [
+    {
+      day: { type: Number },
+      exercises: [
+        {
+          exercise: { type: Schema.Types.ObjectId, ref: 'Exercise' },
+          sets: { type: Number },
+          reps: { type: Number },
+        },
+      ],
+    },
+  ],
 });
 routineSchema.set('toJSON', {
   transform(_document, returnedObject) {

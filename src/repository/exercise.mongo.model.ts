@@ -3,8 +3,6 @@ import { Exercise } from '../entities/exercise.entity.js';
 
 const exerciseSchema = new Schema<Exercise>({
   name: { type: String, required: true },
-  sets: { type: Number, required: true },
-  reps: { type: Number, required: true },
   image: {
     type: {
       publicId: { type: String },

@@ -5,5 +5,10 @@ export type Routine = {
   name: string;
   objective: string;
   level: 'principiante' | 'intermedio' | 'avanzado';
-  exercises: Exercise[];
+  days: [
+    {
+      day: number;
+      exercises: [{ exercise: Exercise; sets: number; reps: number }];
+    }
+  ];
 };
