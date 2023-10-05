@@ -1,25 +1,26 @@
-import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
-import { User } from '../entities/user.entity.js';
-import { UserMongoRepository } from '../repository/user.mongo.repository.js';
-import { Auth } from '../services/auth.js';
-import { HttpError } from '../types/http.error.js';
-import { TokenPayload } from '../types/token.type.js';
-import { Controller } from './controller.js';
-const debug = createDebug('GL:Controller:UserController');
-export class UserController extends Controller<User> {
-  constructor(protected repo: UserMongoRepository) {
+import { Trainer } from '../entities/trainer.entity';
+import { TrainerMongoRepository } from '../repository/trainer.mongo.repository';
+import { Auth } from '../services/auth';
+import { HttpError } from '../types/http.error';
+import { TokenPayload } from '../types/token.type';
+import { Controller } from './controller';
+
+export class TrainerController extends Controller<Trainer> {
+  constructor(protected repo: TrainerMongoRepository) {
     super(repo);
-    debug('instantiate');
   }
 
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       req.body.password = await Auth.hash(req.body.password);
-
-      const data = await this.repo.create(req.body);
-      res.status(201);
-      res.json(data);
+      if (!req.file) {
+        throw new HttpError(
+          400,
+          'Bad Request',
+          'No avatar image for registration'
+        );
+      }
     } catch (error) {
       next(error);
     }
@@ -40,7 +41,6 @@ export class UserController extends Controller<User> {
         userName: data[0].userName,
         id: data[0].id,
       };
-
       const token = Auth.signJWT(payload);
       res.json({ user: data[0], token });
     } catch (error) {
@@ -50,10 +50,13 @@ export class UserController extends Controller<User> {
 
   async update(req: Request, res: Response, next: NextFunction) {
     try {
-      debug(req.body);
-      const data = await this.repo.update(req.body.validatedId, req.body);
-      debug(data);
-      res.json(data);
+      if (req.body.passwd) {
+        req.body.passwd = await Auth.hash(req.body.passwd);
+      }
+
+      const { id } = req.params;
+      const finalItem = await this.repo.update(id, req.body);
+      res.json(finalItem);
     } catch (error) {
       next(error);
     }
