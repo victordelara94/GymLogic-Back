@@ -1,8 +1,8 @@
 import createDebug from 'debug';
-import { Trainer } from '../entities/trainer.entity';
-import { HttpError } from '../types/http.error';
-import { Repository } from './repository';
-import { TrainerModel } from './trainer.mongo.model';
+import { Trainer } from '../entities/trainer.entity.js';
+import { HttpError } from '../types/http.error.js';
+import { Repository } from './repository.js';
+import { TrainerModel } from './trainer.mongo.model.js';
 const debug = createDebug('GL: repo: trainerRepo');
 export class TrainerMongoRepository implements Repository<Trainer> {
   constructor() {
@@ -63,7 +63,7 @@ export class TrainerMongoRepository implements Repository<Trainer> {
       .populate('routines')
       .populate('clients')
       .exec();
-    console.log('data', data);
+
     if (!data) {
       throw new HttpError(404, 'Not Found', 'Trainer not found', {
         cause: 'Trying search',

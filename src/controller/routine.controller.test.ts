@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { Exercise } from '../entities/exercise.entity.js';
 import { Routine } from '../entities/routine.entity.js';
 import { User } from '../entities/user.entity.js';
 import { RoutineMongoRepository } from '../repository/routine.mongo.repository.js';
@@ -34,14 +35,25 @@ describe('Givent the instantiate routineMongoController', () => {
       );
     });
     const mockReq = {
-      body: { id: 'test' },
+      body: {
+        id: 'test',
+        exercise: {} as Exercise,
+        reps: 10,
+        sets: 10,
+        day: 1,
+      },
       params: { id: 'test' },
       query: { key: 'test', value: 'test' },
     } as unknown as Request;
-    const mockRoutineData = {} as Routine;
+    const mockRoutineData = {
+      days: 3,
+      training: [
+        { exercises: [{ exercise: {} as Exercise, sets: 10, reps: 5 }] },
+      ],
+    } as unknown as Routine;
     const aData = [{ id: 'test', routineName: 'test' }];
     test('Then if we use create method', async () => {
-      (mockRoutineRepo.create as jest.Mock).mockReturnValue({} as Routine);
+      (mockRoutineRepo.create as jest.Mock).mockReturnValue(mockRoutineData);
 
       const mockResponse = {
         status: Number,
@@ -64,8 +76,7 @@ describe('Givent the instantiate routineMongoController', () => {
       expect(mockResponse.json).toHaveBeenCalledWith(aData);
     });
     test('Then if we use getById method', async () => {
-      const mockroutineData = {} as Routine;
-      (mockRoutineRepo.getById as jest.Mock).mockResolvedValue(mockroutineData);
+      (mockRoutineRepo.getById as jest.Mock).mockResolvedValue(mockRoutineData);
 
       const mockResponse = {
         json: jest.fn(),
@@ -73,12 +84,13 @@ describe('Givent the instantiate routineMongoController', () => {
 
       await mockRoutineController.getById(mockReq, mockResponse, mockNext);
       expect(mockRoutineRepo.getById).toHaveBeenCalled();
-      expect(mockResponse.json).toHaveBeenCalledWith(mockroutineData);
+      expect(mockResponse.json).toHaveBeenCalledWith(mockRoutineData);
     });
     test('Then if we use addExercise method', async () => {
-      const mockData = { exercises: [] } as unknown as Routine;
-      (mockRoutineRepo.getById as jest.Mock).mockResolvedValueOnce(mockData);
-      (mockRoutineRepo.update as jest.Mock).mockResolvedValueOnce(mockData);
+      (mockRoutineRepo.getById as jest.Mock).mockResolvedValueOnce(
+        mockRoutineData
+      );
+      (mockRoutineRepo.update as jest.Mock).mockResolvedValueOnce({});
 
       const mockResponse = {
         json: jest.fn(),

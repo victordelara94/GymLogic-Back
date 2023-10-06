@@ -1,14 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { Trainer } from '../entities/trainer.entity';
-import { TrainerMongoRepository } from '../repository/trainer.mongo.repository';
-import { Auth } from '../services/auth';
-import { HttpError } from '../types/http.error';
-import { TokenPayload } from '../types/token.type';
-import { Controller } from './controller';
+import { Trainer } from '../entities/trainer.entity.js';
+import { TrainerMongoRepository } from '../repository/trainer.mongo.repository.js';
+import { Auth } from '../services/auth.js';
+import { CloudinaryService } from '../services/files.js';
+import { HttpError } from '../types/http.error.js';
+import { TokenPayload } from '../types/token.type.js';
+import { Controller } from './controller.js';
 
 export class TrainerController extends Controller<Trainer> {
+  cloudinary: CloudinaryService;
   constructor(protected repo: TrainerMongoRepository) {
     super(repo);
+    this.cloudinary = new CloudinaryService();
   }
 
   async register(req: Request, res: Response, next: NextFunction) {
@@ -21,6 +24,13 @@ export class TrainerController extends Controller<Trainer> {
           'No avatar image for registration'
         );
       }
+
+      const path = req.file.destination + '/' + req.file.filename;
+      const image = await this.cloudinary.uploadImage(path);
+      req.body.image = image;
+      const data = await this.repo.create(req.body);
+      res.status(201);
+      res.json(data);
     } catch (error) {
       next(error);
     }
