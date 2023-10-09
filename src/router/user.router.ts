@@ -43,5 +43,15 @@ export class UserRouter {
       this.authInterceptor.authorizate.bind(this.authInterceptor),
       this.controller.update.bind(this.controller)
     );
+    this.router.patch(
+      '/trainer',
+      this.authInterceptor.authorizate.bind(this.authInterceptor),
+      this.controller.changeTrainer.bind(this.controller)
+    );
+    this.router.delete(
+      '/',
+      this.authInterceptor.authorizate.bind(this.authInterceptor),
+      this.controller.deleteAccount.bind(this.controller)
+    );
   }
 }

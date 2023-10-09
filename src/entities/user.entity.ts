@@ -12,7 +12,7 @@ export type User = Login & {
   age: number;
   height: number;
   weight: number;
-  actualRoutine: Routine | null;
+  actualRoutine: { routine: Routine | null; isCompleted: boolean };
   actualTrainer: Trainer | null;
   completedRoutines: Routine[];
 };

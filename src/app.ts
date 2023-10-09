@@ -29,20 +29,20 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const userRepository = new UserMongoRepository();
-const userController = new UserController(userRepository);
-const userRouter = new UserRouter(userController);
+const trainerRepository = new TrainerMongoRepository();
+const exerciseRepository = new ExerciseMongoRepository();
 const routineRepository = new RoutineMongoRepository();
+const userController = new UserController(userRepository, trainerRepository);
+const trainerController = new TrainerController(trainerRepository);
+const exerciseController = new ExerciseController(exerciseRepository);
 const routineController = new RoutineController(
   routineRepository,
   userRepository
 );
-const exerciseRepository = new ExerciseMongoRepository();
-const exerciseController = new ExerciseController(exerciseRepository);
-const routineRouter = new RoutineRouter(routineController);
-const exerciseRouter = new ExerciseRouter(exerciseController);
-const trainerRepository = new TrainerMongoRepository();
-const trainerController = new TrainerController(trainerRepository);
+const userRouter = new UserRouter(userController);
 const trainerRouter = new TrainerRouter(trainerController);
+const exerciseRouter = new ExerciseRouter(exerciseController);
+const routineRouter = new RoutineRouter(routineController);
 app.use('/users', userRouter.router);
 app.use('/routines', routineRouter.router);
 app.use('/exercises', exerciseRouter.router);
