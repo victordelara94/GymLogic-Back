@@ -75,7 +75,7 @@ export class UserController extends Controller<User> {
         user.actualTrainer = null;
       }
 
-      this.userRepo.update(req.body.validatedId, user);
+      await this.userRepo.update(req.body.validatedId, user);
       res.json(user);
     } catch (error) {
       next(error);
@@ -84,8 +84,8 @@ export class UserController extends Controller<User> {
 
   async deleteAccount(req: Request, res: Response, next: NextFunction) {
     try {
-      if (req.params.id === req.body.validateId) {
-        this.userRepo.delete(req.params.id);
+      if (req.params.id === req.body.validatedId) {
+        await this.userRepo.delete(req.params.id);
         res.json({});
       }
     } catch (error) {

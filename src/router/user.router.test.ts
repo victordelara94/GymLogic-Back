@@ -9,6 +9,8 @@ describe('Given the class UserRouter', () => {
     getById: jest.fn(),
     getAll: jest.fn(),
     update: jest.fn(),
+    changeTrainer: jest.fn(),
+    deleteAccount: jest.fn(),
   } as unknown as UserController;
 
   describe('When we instantiate it', () => {

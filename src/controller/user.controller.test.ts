@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { Routine } from '../entities/routine.entity.js';
+import { Trainer } from '../entities/trainer.entity.js';
 import { RoutineMongoRepository } from '../repository/routine.mongo.repository.js';
+import { TrainerMongoRepository } from '../repository/trainer.mongo.repository.js';
 import { UserMongoRepository } from '../repository/user.mongo.repository.js';
 import { Auth } from '../services/auth.js';
 import { UserController } from './user.controller.js';
@@ -26,10 +28,8 @@ describe('Givent the instantiate UserMongoController', () => {
       };
       mockUserMongoController = new UserController(mockRepo);
     });
-
+    const mockUserData = { id: 'test', userName: 'test' };
     test('Then if we use register method', async () => {
-      const mockUserData = { id: 'test', userName: 'test' };
-
       (mockRepo.create as jest.Mock).mockReturnValue({
         id: 'test',
         userName: 'test',
@@ -123,10 +123,6 @@ describe('Givent the instantiate UserMongoController', () => {
       expect(mockResponse.json).toHaveBeenCalledWith(mockUserData);
     });
     test('Then if we use update method', async () => {
-      const mockData = { id: 'test', userName: 'test' };
-      Auth.hash = await jest.fn().mockReturnValue('hash');
-      (mockRepo.update as jest.Mock).mockResolvedValue(mockData);
-
       const mockReq = {
         body: { actualRoutine: 'test', validatedId: 'test' },
       } as unknown as Request;
@@ -139,6 +135,61 @@ describe('Givent the instantiate UserMongoController', () => {
         .mockResolvedValueOnce({} as Routine);
       await mockUserMongoController.update(mockReq, mockResponse, mockNext);
       expect(mockRepo.update).toHaveBeenCalled();
+      expect(mockResponse.json).toHaveBeenCalled();
+    });
+    test('Then if we use changeTrainer method with a new trainer', async () => {
+      TrainerMongoRepository.prototype.getById = jest
+        .fn()
+        .mockResolvedValueOnce({} as Trainer);
+      (mockRepo.getById as jest.Mock).mockResolvedValue(mockUserData);
+      const mockReq = {
+        body: { id: test, validatedId: 'test' },
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+      await mockUserMongoController.changeTrainer(
+        mockReq,
+        mockResponse,
+        mockNext
+      );
+      expect(mockRepo.update).toHaveBeenCalled();
+      expect(mockResponse.json).toHaveBeenCalled();
+    });
+    test('Then if we use changeTrainer method withOut trainer', async () => {
+      TrainerMongoRepository.prototype.getById = jest
+        .fn()
+        .mockResolvedValueOnce({} as Trainer);
+      (mockRepo.getById as jest.Mock).mockResolvedValue(mockUserData);
+      const mockReq = {
+        body: { validatedId: 'test' },
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+      await mockUserMongoController.changeTrainer(
+        mockReq,
+        mockResponse,
+        mockNext
+      );
+      expect(mockRepo.update).toHaveBeenCalled();
+      expect(mockResponse.json).toHaveBeenCalled();
+    });
+    test('Then if we use deleteAccount method', async () => {
+      const mockReq = {
+        body: { validatedId: 'test' },
+        params: { id: 'test' },
+      } as unknown as Request;
+
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+      await mockUserMongoController.deleteAccount(
+        mockReq,
+        mockResponse,
+        mockNext
+      );
+      expect(mockRepo.delete).toHaveBeenCalled();
       expect(mockResponse.json).toHaveBeenCalled();
     });
   });
@@ -157,6 +208,7 @@ describe('Givent the instantiate UserMongoController', () => {
       body: {
         password: 'test',
         id: 'test',
+        validatedId: 'test',
       },
       params: { id: 'test' },
     } as unknown as Request;
@@ -180,6 +232,22 @@ describe('Givent the instantiate UserMongoController', () => {
     test('Then if we use update, next should called with error', async () => {
       await mockUserMongoController.update(mockReq, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(new Error('Update Error'));
+    });
+    test('Then if we use changeTrainer, next should called with error', async () => {
+      await mockUserMongoController.changeTrainer(
+        mockReq,
+        mockResponse,
+        mockNext
+      );
+      expect(mockNext).toHaveBeenCalledWith(new Error('GetById Error'));
+    });
+    test('Then if we use deleteAccount, next should called with error', async () => {
+      await mockUserMongoController.deleteAccount(
+        mockReq,
+        mockResponse,
+        mockNext
+      );
+      expect(mockNext).toHaveBeenCalledWith(new Error('Delete Error'));
     });
   });
 });

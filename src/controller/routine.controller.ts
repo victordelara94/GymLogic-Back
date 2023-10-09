@@ -50,7 +50,7 @@ export class RoutineController {
         value: routine,
       });
       const cleanRoutine = {
-        actualRoutine: null,
+        actualRoutine: { routine: null, isCompleted: false },
       };
 
       users.forEach((user) => this.repoUser.update(user.id, cleanRoutine));
