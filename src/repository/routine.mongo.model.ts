@@ -15,7 +15,7 @@ const routineSchema = new Schema<Routine>({
   },
   training: [
     {
-      exercises: [
+      exercisesPerDay: [
         {
           exercise: { type: Schema.Types.ObjectId, ref: 'Exercise' },
           sets: { type: Number },

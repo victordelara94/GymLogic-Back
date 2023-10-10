@@ -12,6 +12,7 @@ describe('Given the class RoutineRouter', () => {
     addExercise: jest.fn(),
     userGetAll: jest.fn(),
     filterRoutines: jest.fn(),
+    update: jest.fn(),
   } as unknown as RoutineController;
 
   describe('When we instantiate it', () => {

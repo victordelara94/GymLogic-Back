@@ -61,6 +61,18 @@ export class RoutineController {
     }
   }
 
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const updatedRoutine = await this.repoRoutine.update(
+        req.body.id,
+        req.body
+      );
+      res.json(updatedRoutine);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async addExercise(req: Request, res: Response, next: NextFunction) {
     try {
       const routine = await this.repoRoutine.getById(req.params.id);
@@ -71,7 +83,7 @@ export class RoutineController {
         day,
       }: { exercise: Exercise; sets: number; reps: number; day: number } =
         req.body;
-      routine.training[day - 1].exercises.push({ exercise, sets, reps });
+      routine.training[day - 1].exercisesPerDay.push({ exercise, sets, reps });
       const updatedRoutine = await this.repoRoutine.update(routine.id, routine);
       res.json(updatedRoutine);
     } catch (error) {

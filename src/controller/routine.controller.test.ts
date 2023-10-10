@@ -48,7 +48,7 @@ describe('Givent the instantiate routineMongoController', () => {
     const mockRoutineData = {
       days: 3,
       training: [
-        { exercises: [{ exercise: {} as Exercise, sets: 10, reps: 5 }] },
+        { exercisesPerDay: [{ exercise: {} as Exercise, sets: 10, reps: 5 }] },
       ],
     } as unknown as Routine;
     const aData = [{ id: 'test', routineName: 'test' }];
@@ -99,6 +99,18 @@ describe('Givent the instantiate routineMongoController', () => {
 
       await mockRoutineController.addExercise(mockReq, mockResponse, mockNext);
       expect(mockRoutineRepo.getById).toHaveBeenCalled();
+      expect(mockResponse.json).toHaveBeenCalled();
+    });
+    test('Then if we use update method', async () => {
+      (mockRoutineRepo.update as jest.Mock).mockResolvedValueOnce({});
+
+      const mockResponse = {
+        json: jest.fn(),
+        status: Number,
+      } as unknown as Response;
+
+      await mockRoutineController.update(mockReq, mockResponse, mockNext);
+      expect(mockRoutineRepo.update).toHaveBeenCalled();
       expect(mockResponse.json).toHaveBeenCalled();
     });
     test('Then if we use delete method', async () => {
@@ -186,18 +198,20 @@ describe('Givent the instantiate routineMongoController', () => {
       expect(mockNext).toHaveBeenCalledWith(new Error('GetById Error'));
     });
     test('Then if we use delete, next should called with error', async () => {
-      const mockNext = jest.fn();
       await mockRoutineMongoController.delete(mockReq, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(new Error('GetById Error'));
     });
     test('Then if we use filterRoutines, next should called with error', async () => {
-      const mockNext = jest.fn();
       await mockRoutineMongoController.filterRoutines(
         mockReq,
         mockResponse,
         mockNext
       );
       expect(mockNext).toHaveBeenCalledWith(new Error('Search Error'));
+    });
+    test('Then if we use filterRoutines, next should called with error', async () => {
+      await mockRoutineMongoController.update(mockReq, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(new Error('Update Error'));
     });
   });
 });

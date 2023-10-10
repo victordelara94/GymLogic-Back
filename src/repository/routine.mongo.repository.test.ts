@@ -9,14 +9,10 @@ describe('Given the class RoutineMongoRepository', () => {
     const mockRoutine = {} as Routine;
     const mockRoutineNoId = {} as Omit<Routine, 'id'>;
     RoutineModel.find = jest.fn().mockReturnValue({
-      populate: jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue([]) }),
+      exec: jest.fn().mockResolvedValue([]),
     });
     RoutineModel.findById = jest.fn().mockReturnValue({
-      populate: jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue([]) }),
+      exec: jest.fn().mockResolvedValue([]),
     });
     RoutineModel.create = jest.fn().mockResolvedValueOnce(mockRoutine);
     RoutineModel.findByIdAndUpdate = jest
@@ -58,9 +54,8 @@ describe('Given the class RoutineMongoRepository', () => {
     const repo = new RoutineMongoRepository();
     const mockExec = jest.fn().mockResolvedValue(null);
     test('Then getById should return error', async () => {
-      RoutineModel.findById = jest.fn().mockReturnValue({
-        populate: jest.fn().mockReturnValue({ exec: mockExec }),
-      });
+      RoutineModel.findById = jest.fn().mockReturnValue({ exec: mockExec });
+
       expect(repo.getById('')).rejects.toThrow();
     });
     test('Then update should return error', async () => {
@@ -79,7 +74,7 @@ describe('Given the class RoutineMongoRepository', () => {
       const mockKey = 'test';
       const mockValue = 'test';
       RoutineModel.find = jest.fn().mockReturnValue({
-        populate: jest.fn().mockReturnValue({ exec: mockExec }),
+        exec: mockExec,
       });
       expect(repo.search({ key: mockKey, value: mockValue })).rejects.toThrow();
     });

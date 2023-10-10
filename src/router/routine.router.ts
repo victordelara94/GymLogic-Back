@@ -46,6 +46,13 @@ export class RoutineRouter {
       this.controller.delete.bind(this.controller)
     );
     this.router.patch(
+      '/',
+      this.authInterceptor.authorizate.bind(this.authInterceptor),
+      this.authInterceptor.adminAuthentication.bind(this.authInterceptor),
+      this.controller.update.bind(this.controller)
+    );
+
+    this.router.patch(
       '/:id',
       this.authInterceptor.authorizate.bind(this.authInterceptor),
       this.authInterceptor.adminAuthentication.bind(this.authInterceptor),

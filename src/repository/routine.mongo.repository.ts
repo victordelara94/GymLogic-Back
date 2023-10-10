@@ -10,14 +10,12 @@ export class RoutineMongoRepository implements Repository<Routine> {
   }
 
   async getAll(): Promise<Routine[]> {
-    const data = await RoutineModel.find().populate('exercises', {}).exec();
+    const data = await RoutineModel.find().exec();
     return data;
   }
 
   async getById(id: string): Promise<Routine> {
-    const data = await RoutineModel.findById(id)
-      .populate('exercises', {})
-      .exec();
+    const data = await RoutineModel.findById(id).exec();
     if (!data)
       throw new HttpError(404, 'Not Found', 'Routine not found', {
         cause: 'Trying getById',
@@ -50,9 +48,7 @@ export class RoutineMongoRepository implements Repository<Routine> {
     key: string;
     value: unknown;
   }): Promise<Routine[]> {
-    const data = await RoutineModel.find({ [key]: value })
-      .populate('exercises', {})
-      .exec();
+    const data = await RoutineModel.find({ [key]: value }).exec();
     if (!data)
       throw new HttpError(404, 'Not Found', 'Routine not found', {
         cause: 'Trying getById',
