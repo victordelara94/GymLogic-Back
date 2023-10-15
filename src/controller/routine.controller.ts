@@ -64,7 +64,7 @@ export class RoutineController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       const updatedRoutine = await this.repoRoutine.update(
-        req.body.id,
+        req.params.id,
         req.body
       );
       res.json(updatedRoutine);

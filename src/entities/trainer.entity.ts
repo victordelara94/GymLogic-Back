@@ -1,5 +1,6 @@
-import { Routine } from './routine.entity';
-import { User } from './user.entity';
+import { Exercise } from './exercise.entity.js';
+import { Routine } from './routine.entity.js';
+import { User } from './user.entity.js';
 
 export type Login = {
   userName: string;
@@ -10,5 +11,6 @@ export type Trainer = Login & {
   email: string;
   age: number;
   routines: Routine[];
+  exercises: Exercise[];
   clients: User[];
 };

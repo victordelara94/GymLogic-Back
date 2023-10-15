@@ -4,4 +4,5 @@ export type Exercise = {
   id: string;
   name: string;
   image: ImgData;
+  muscle: string;
 };

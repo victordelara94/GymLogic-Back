@@ -21,6 +21,7 @@ export const trainerSchema = new Schema<Trainer>({
     required: true,
   },
   clients: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  exercises: [{ type: Schema.Types.ObjectId, ref: 'Exercise' }],
   routines: [{ type: Schema.Types.ObjectId, ref: 'Routine' }],
 });
 trainerSchema.set('toJSON', {

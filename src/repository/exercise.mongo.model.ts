@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import { Exercise } from '../entities/exercise.entity.js';
 
 const exerciseSchema = new Schema<Exercise>({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   image: {
     type: {
       publicId: { type: String },
@@ -12,6 +12,7 @@ const exerciseSchema = new Schema<Exercise>({
       url: { type: String },
     },
   },
+  muscle: { type: String, required: true },
 });
 exerciseSchema.set('toJSON', {
   transform(_document, returnedObject) {
